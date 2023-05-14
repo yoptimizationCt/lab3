@@ -32,7 +32,7 @@ def bfgs(f, x0, max_iter=1000, tol=1e-6):
         B = (np.eye(n) - rho * np.outer(s, y)) @ B @ (np.eye(n) - rho * np.outer(y, s)) + rho * np.outer(s, s)
         x, grad = x_new, grad_new
 
-    return points, num_epoch
+    return points[:num_epoch].copy(), num_epoch
 
 
 f1 = lambda x: (1 - x[0]) ** 2 + 100 * (x[1] - x[0] ** 2) ** 2
@@ -50,8 +50,14 @@ for i in range(len(f)):
     print("For " + str(i + 1) + " function it took " + str(num_epoch) + " iterations!")
     point = points[num_epoch - 1]
     print("Point: " + str(point))
+    plt.rcParams["figure.figsize"] = (10, 10)
+    # Draw depending on the point
     # paint_contour(point[0] - x_dif, point[0] + x_dif,
     #               point[1] - y_dif, point[1] + y_dif,
     #               accuracy, points, f[i])
-    # plt.show()
+    # Draw fixed
+    paint_contour(-5, 5,
+                  -5, 5,
+                  accuracy, points, f[i])
+    plt.show()
 
