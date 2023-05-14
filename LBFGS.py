@@ -3,7 +3,7 @@ import calc
 import numpy as np
 
 
-def l_bfgs(f, start_point, epoch=10000,  m=10):
+def l_bfgs(f, start_point, epoch=1000,  m=10):
     # инициируем некоторые константы и начальные значения
     grad_eps = 1e-7
     x = start_point
@@ -21,8 +21,8 @@ def l_bfgs(f, start_point, epoch=10000,  m=10):
     last_updates_ro = collections.deque()
 
     # инициируем стартовое смещение
-    z = 0.018 * g
-
+    z = 0.018 * calc.gradient(f, x)
+    count_epochs = 0
     for k in range(1, epoch+1):
 
         # получаем новое значение х и высчитываем на delta_x и delta_gradient
@@ -37,6 +37,7 @@ def l_bfgs(f, start_point, epoch=10000,  m=10):
         # если норма градиента меньше эпсилон, то стоп
         if np.linalg.norm(g) < grad_eps:
             print("Потребовалось итераций " + str(k))
+            count_epochs = k
             break
         if k > m:
             # в дэке должно быть не больше m элементов
@@ -62,6 +63,5 @@ def l_bfgs(f, start_point, epoch=10000,  m=10):
         for i in range(size):
             beta[i] = last_updates_ro[i] * np.dot(last_updates_y[i], z)
             z = z + last_updates_s[i] * (alpha[i] - beta[i])
-
-    return x
+    return x, points[:count_epochs+1]
 
